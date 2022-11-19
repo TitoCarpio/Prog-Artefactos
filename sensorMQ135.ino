@@ -17,6 +17,9 @@
 
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
+// Libreria para mandar correos desde esp8266
+#include <EMailSender.h>
+
 
 char auth[] = BLYNK_AUTH_TOKEN;
 int sensor = A0;
@@ -56,6 +59,8 @@ BLYNK_CONNECTED()
 //   Blynk.virtualWrite(V2, millis() / 1000);
 // }
 
+
+
 void setup()
 {
   pinMode(sensor, INPUT);
@@ -77,9 +82,13 @@ void loop()
   timer.run();
   valor = analogRead(sensor);
   Serial.println(valor);
+  if(valor > 120){
+    Blynk.logEvent("hppm", String("Peligroooo ")+ valor);
+  }
   Blynk.virtualWrite(V0,valor);
   delay(5000);
   // You can inject your own code or combine it with other sketches.
   // Check other examples on how to communicate with Blynk. Remember
   // to avoid delay() function!
 }
+
