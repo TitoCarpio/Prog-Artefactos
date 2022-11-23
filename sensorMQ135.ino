@@ -19,11 +19,16 @@
 #include <BlynkSimpleEsp8266.h>
 // Libreria para mandar correos desde esp8266
 #include <EMailSender.h>
+#include <MQ135.h>
 
 
 char auth[] = BLYNK_AUTH_TOKEN;
-int sensor = A0;
-float valor= 0;
+
+#define PIN_MQ135 A0
+MQ135 mq135_sensor(PIN_MQ135);
+
+//int sensor = A0;
+float valor= 0.0;
 
 // Your WiFi credentials.
 // Set password to "" for open networks.
@@ -63,7 +68,7 @@ BLYNK_CONNECTED()
 
 void setup()
 {
-  pinMode(sensor, INPUT);
+ // pinMode(sensor, INPUT);
   // Debug console
   Serial.begin(115200);
 
@@ -80,9 +85,10 @@ void loop()
 {
   Blynk.run();
   timer.run();
-  valor = analogRead(sensor);
+  //valor = analogRead(sensor);
+  valor = mq135_sensor.getPPM();
   Serial.println(valor);
-  if(valor > 120){
+  if(valor > 220){
     Blynk.logEvent("hppm", String("Peligroooo ")+ valor);
   }
   Blynk.virtualWrite(V0,valor);
