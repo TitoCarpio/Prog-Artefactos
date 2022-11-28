@@ -1,8 +1,3 @@
-/*************************************************************
-
-  This is a simple demo of sending and receiving some data.
-  Be sure to check out other examples!
- *************************************************************/
 
 // Template ID, Device Name and Auth Token are provided by the Blynk.Cloud
 // See the Device Info tab, or Template settings
@@ -17,9 +12,7 @@
 
 #include <ESP8266WiFi.h>
 #include <BlynkSimpleEsp8266.h>
-// Libreria para mandar correos desde esp8266
-//#include <EMailSender.h>
-// #include <MQ135.h>
+
 // Librerias para el uso de OLED
 #include <SPI.h>
 #include <Wire.h>
@@ -37,9 +30,6 @@ char auth[] = BLYNK_AUTH_TOKEN;
 #define OLED_RESET -1   //   QT-PY / XIAO
 Adafruit_SH1106G display = Adafruit_SH1106G(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-
-// #define PIN_MQ135 A0
-// MQ135 mq135_sensor(PIN_MQ135);
 
 int sensor = A0;
 float valor= 0.0;
@@ -70,16 +60,6 @@ BLYNK_CONNECTED()
   Blynk.setProperty(V3, "url", "https://docs.blynk.io/en/getting-started/what-do-i-need-to-blynk/how-quickstart-device-was-made");
 }
 
-// This function sends Arduino's uptime every second to Virtual Pin 2.
-// void myTimerEvent()
-// {
-//   // You can send any value at any time.
-//   // Please don't send more that 10 values per second.
-//   Blynk.virtualWrite(V2, millis() / 1000);
-// }
-
-
-
 void setup()
 {
   pinMode(sensor, INPUT);
@@ -88,12 +68,7 @@ void setup()
   Serial.begin(115200);
 
   Blynk.begin(auth, ssid, pass);
-  // You can also specify server:
-  //Blynk.begin(auth, ssid, pass, "blynk.cloud", 80);
-  //Blynk.begin(auth, ssid, pass, IPAddress(192,168,1,100), 8080);
-
-  // Setup a function to be called every second
-  //timer.setInterval(1000L, myTimerEvent);
+  
 
   // Inicializacion de display OLED
   delay(250); // wait for the OLED to power up
@@ -115,14 +90,13 @@ void loop()
   valor = analogRead(sensor);
   Serial.println(valor);
   if(valor > 100){
-    Blynk.logEvent("hppm", String("Peligroooo ")+ valor);
+    // Manda a llamar al evento programado en Blynk
+    Blynk.logEvent("hppm", String("PELIGRO, niveles de CO2 altos: ")+ valor + String(" PPM."));
     digitalWrite(D7, HIGH);
   }
   Blynk.virtualWrite(V0,valor);
   delay(2000);
-  // You can inject your own code or combine it with other sketches.
-  // Check other examples on how to communicate with Blynk. Remember
-  // to avoid delay() function!
+  
 
   // Limpiar buffer
   display.clearDisplay();
